@@ -17,17 +17,22 @@ import useToast from './useToast';
 // @ts-ignore
 import markdownItEChartsPlugin from '../libs/markdownit-plugins/markdownItEChartsPlugin';
 
-// 缓存配置
+/** Maximum number of cached render results */
 const CACHE_SIZE = 100;
+/** Cache for storing rendered markdown results */
 const renderCache = new Map<string, string>();
 
-// excluded LaTeX commands that should not be wrapped in $$
+/** LaTeX commands that should not be automatically wrapped in dollar signs */
 const EXCLUDED_COMMANDS = [
   '\\begin', '\\end', '\\documentclass', '\\usepackage', '\\newcommand',
   '\\renewcommand', '\\DeclareMathOperator', '\\def'
 ];
 
-// 数学表达式处理函数
+/**
+ * Processes LaTeX expressions in a string by wrapping them in dollar signs if not already wrapped
+ * @param str - The input string containing potential LaTeX expressions
+ * @returns The processed string with LaTeX expressions properly wrapped
+ */
 function processLatexExpressions(str: string): string {
   // check if the expression is already wrapped in $$
   const mathRegex = /\$([^$]+)\$/g;
@@ -65,6 +70,11 @@ function processLatexExpressions(str: string): string {
   });
 }
 
+/**
+ * Processes a string by applying multiple LaTeX transformations
+ * @param str - The input string to process
+ * @returns The processed string with LaTeX transformations applied
+ */
 function batchProcessString(str: string): string {
   try {
     // step 1: replace \pi with π
@@ -85,10 +95,20 @@ function batchProcessString(str: string): string {
   }
 }
 
+/**
+ * Retrieves a cached render result for the given key
+ * @param key - The cache key to look up
+ * @returns The cached result if found, undefined otherwise
+ */
 function getCachedResult(key: string): string | undefined {
   return renderCache.get(key);
 }
 
+/**
+ * Stores a render result in the cache, removing the oldest entry if cache is full
+ * @param key - The cache key to store under
+ * @param value - The rendered result to cache
+ */
 function setCachedResult(key: string, value: string): void {
   if (renderCache.size >= CACHE_SIZE) {
     // remove the oldest entry if cache size exceeds limit
@@ -98,6 +118,11 @@ function setCachedResult(key: string, value: string): void {
   renderCache.set(key, value);
 }
 
+/**
+ * Custom React hook that provides markdown rendering functionality with caching
+ * Supports LaTeX math, Mermaid diagrams, code highlighting, emoji, and more
+ * @returns Object containing render function and cache management utilities
+ */
 export default function useMarkdown() {
   const theme = useAppearanceStore((state) => state.theme);
   const { notifySuccess } = useToast();
@@ -107,6 +132,12 @@ export default function useMarkdown() {
     html: true,
     linkify: true,
     typographer: true,
+    /**
+     * Highlights code blocks using highlight.js with support for loading indicators
+     * @param str - The code string to highlight
+     * @param lang - The programming language for syntax highlighting
+     * @returns HTML string with syntax highlighting applied
+     */
     highlight(str: string, lang: string) {
       // notice: 硬编码解决 ellipsis-loader 被转移为代码显示的问题。
       const loader = '<span class="blinking-cursor" /></span>';
@@ -225,6 +256,11 @@ export default function useMarkdown() {
   };
 
   return {
+    /**
+     * Renders markdown string to HTML with caching
+     * @param str - The markdown string to render
+     * @returns Sanitized HTML string
+     */
     render: (str: string): string => {
       const cached = getCachedResult(str);
       if (cached) {
@@ -240,9 +276,16 @@ export default function useMarkdown() {
         return DOMPurify.sanitize(str);
       }
     },
+    /**
+     * Clears all cached render results
+     */
     clearCache: () => {
       renderCache.clear();
     },
+    /**
+     * Returns statistics about the current cache state
+     * @returns Object containing current cache size and maximum size
+     */
     getCacheStats: () => ({
       size: renderCache.size,
       maxSize: CACHE_SIZE,

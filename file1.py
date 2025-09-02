@@ -20,6 +20,13 @@ from logging import debug, exception
 
 
 class Client(object):
+    """
+    A client for handling payment processing operations including XML creation,
+    encryption/decryption, and webhook processing.
+    
+    This class provides functionality to create payment requests, encrypt/decrypt
+    messages, and handle webhook responses for payment processing.
+    """
 
     ACTION_NEW = 'new'
     ACTION_PAID_PENDING = 'paid_pending'
@@ -40,6 +47,18 @@ class Client(object):
     }
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the Client with required signature and key files.
+        
+        Args:
+            signature (str): The signature string for authentication
+            public_key (str): Path to the public key file
+            private_key (str): Path to the private key file
+            developement (bool, optional): Enable development mode for additional logging. Defaults to False.
+            
+        Raises:
+            Exception: If signature, public_key, or private_key arguments are missing
+        """
 
         signature = kwargs.get('signature')
 
@@ -74,6 +93,25 @@ class Client(object):
         self.developement = kwargs.get('developement', False)
 
     def create_request_xml(self, **kwargs):
+        """
+        Create an XML request for payment processing.
+        
+        Args:
+            order_id (str): Unique identifier for the order
+            order_type (str, optional): Type of order. Defaults to 'card'
+            timestamp (str): Timestamp for the order
+            amount (float): Payment amount
+            currency (str, optional): Currency code. Defaults to 'RON'
+            customer_id (str): Customer identifier
+            details (str): Payment description
+            billing (dict, optional): Billing information containing first_name, last_name, address, email, phone
+            params (dict, optional): Additional parameters to include in the request
+            confirm_url (str): URL for payment confirmation
+            return_url (str): URL for user return after payment
+            
+        Returns:
+            bytes: XML content as bytes
+        """
 
         order_id = kwargs.get('order_id')
         order_type = kwargs.get('order_type', 'card')
@@ -127,6 +165,13 @@ class Client(object):
             params_el = SubElement(order, 'params')
 
             def add_other_param(param_name, param_value):
+                """
+                Add a parameter element to the XML structure.
+                
+                Args:
+                    param_name (str): The name of the parameter
+                    param_value (str): The value of the parameter
+                """
                 if param_name and param_value:
                     param = SubElement(params_el, 'param')
                     name = SubElement(param, 'name')
@@ -152,6 +197,15 @@ class Client(object):
         return virtual_file.getvalue()
 
     def encrypt_message(self, xml_message):
+        """
+        Encrypt an XML message using RSA and ARC4 encryption.
+        
+        Args:
+            xml_message (bytes): The XML message to encrypt
+            
+        Returns:
+            dict: Dictionary containing 'env_key' and 'data' as base64 encoded strings
+        """
 
         key = RSA.importKey(self.public_key)
         cipher = PKCS1_v1_5.new(key)
@@ -171,7 +225,17 @@ class Client(object):
 
     def decrypt_message(self, env_key, data):
         """
-        Used to decrypt data from mobilpay
+        Decrypt data received from the payment provider.
+        
+        Args:
+            env_key (str): Base64 encoded encrypted session key
+            data (str): Base64 encoded encrypted data
+            
+        Returns:
+            bytes: Decrypted XML data
+            
+        Raises:
+            Exception: If arguments are missing or decryption fails
         """
 
         if not env_key or not data:
@@ -213,6 +277,15 @@ class Client(object):
 
     @staticmethod
     def parse_webhook_request(xml):
+        """
+        Parse XML data from a webhook request.
+        
+        Args:
+            xml (str): XML string to parse
+            
+        Returns:
+            dict: Parsed data containing order information, parameters, and response details
+        """
 
         data = {}
 
@@ -252,6 +325,17 @@ class Client(object):
 
     @staticmethod
     def create_webhook_reponse(**kwargs):
+        """
+        Create an XML response for webhook requests.
+        
+        Args:
+            message (str, optional): Response message. Defaults to empty string
+            error_type (str, optional): Error type if applicable. Defaults to empty string
+            error_code (str, optional): Error code if applicable. Defaults to empty string
+            
+        Returns:
+            bytes: XML response as bytes
+        """
 
         message = kwargs.get('message', '')
 
@@ -279,7 +363,24 @@ class Client(object):
 
     def create_payment_data(self, **kwargs):
         """
-        Used to create the env_key and data to make a mobilpay request
+        Create encrypted payment data for making a payment request.
+        
+        Args:
+            order_id (str): Unique identifier for the order (max 64 characters)
+            currency (str, optional): Currency code. Defaults to 'RON'
+            amount (float): Payment amount
+            customer_id (str): Customer identifier
+            details (str): Payment description
+            billing (dict, optional): Billing information
+            params (dict, optional): Additional parameters
+            confirm_url (str): URL for payment confirmation
+            return_url (str): URL for user return after payment
+            
+        Returns:
+            dict: Dictionary containing encrypted 'env_key' and 'data'
+            
+        Raises:
+            Exception: If required arguments are missing or order_id exceeds 64 characters
         """
 
         order_id = kwargs.get('order_id')
