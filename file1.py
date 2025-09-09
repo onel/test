@@ -49,7 +49,7 @@ class Client(object):
         """
         Initialize the MobilPay client with required credentials.
         
-        Args:
+        Keyword Args:
             signature (str): The merchant signature for authentication
             public_key (str): Path to the public key certificate file
             private_key (str): Path to the private key file
