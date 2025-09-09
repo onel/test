@@ -25,6 +25,27 @@ class Client(object):
     
     Provides functionality to create payment requests, encrypt/decrypt messages,
     and handle webhook responses from the MobilPay payment system.
+    
+    Example:
+        client = Client(
+            signature='XXXX-XXXX-XXXX-XXXX-XXXX',
+            public_key='path/to/public.cer',
+            private_key='path/to/private.key'
+        )
+        
+        # Create payment data
+        payment_data = client.create_payment_data(
+            order_id='12345',
+            amount=100.0,
+            customer_id='customer123',
+            details='Payment description',
+            confirm_url='https://example.com/confirm',
+            return_url='https://example.com/return'
+        )
+        
+        # Handle webhook
+        xml_data = client.decrypt_message(env_key, data)
+        parsed_data = Client.parse_webhook_request(xml_data)
     """
 
     ACTION_NEW = 'new'
@@ -49,7 +70,7 @@ class Client(object):
         """
         Initialize the MobilPay client with required credentials.
         
-        Keyword Args:
+        Args:
             signature (str): The merchant signature for authentication
             public_key (str): Path to the public key certificate file
             private_key (str): Path to the private key file
