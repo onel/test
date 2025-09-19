@@ -17,7 +17,7 @@ import useToast from './useToast';
 // @ts-ignore
 import markdownItEChartsPlugin from '../libs/markdownit-plugins/markdownItEChartsPlugin';
 
-// 缓存配置
+// this is a comment
 const CACHE_SIZE = 100;
 const renderCache = new Map<string, string>();
 
