@@ -92,4 +92,4 @@ python new.py --demo
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+[MIT License](LICENSE) - see file for details.
