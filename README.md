@@ -1,6 +1,14 @@
 # Utility Tools Collection
 
-React hooks and Python tools for markdown rendering, charts, and LightRAG diagnostics.
+React hooks for markdown rendering and charts, plus a Python diagnostic tool for LightRAG.
+
+## Components
+
+**useMarkdown** - React hook for rendering markdown with LaTeX, Mermaid diagrams, syntax highlighting, and emojis
+
+**useECharts** - React hook for ECharts integration with automatic theme support
+
+**LightRAG Diagnostic** - Python tool to verify LightRAG initialization status
 
 ## Installation
 
@@ -12,7 +20,7 @@ Install dependencies:
 npm install echarts katex markdown-it markdown-it-texmath markdown-it-mermaid markdown-it-emoji dompurify highlight.js
 ```
 
-Copy `file1.ts` and `file2.ts` into your project.
+Copy `file1.ts` and `file2.ts` to your project.
 
 ### Python Tool
 
@@ -24,19 +32,19 @@ python new.py --demo
 
 ## Usage
 
-### Markdown with LaTeX and Mermaid
+### useMarkdown
 
 ```typescript
-import useMarkdown from './file2';
+import useMarkdown from './useMarkdown';
 
 const { render } = useMarkdown();
-const html = render('# Title\n\nMath: $E = mc^2$');
+const html = render('# Hello\n\nMath: $E = mc^2$');
 ```
 
-### ECharts Integration
+### useECharts
 
 ```typescript
-import useECharts from './file1';
+import useECharts from './useECharts';
 
 const { initECharts, disposeECharts } = useECharts({ message });
 initECharts('prefix', 'chart-id');
@@ -49,13 +57,6 @@ from new import check_lightrag_setup
 
 await check_lightrag_setup(rag, verbose=True)
 ```
-
-## Contributing
-
-1. Clone the repository
-2. Install dependencies (TypeScript: `npm install`, Python: Python 3.7+)
-3. Make changes and test
-4. Submit a pull request
 
 ## License
 
