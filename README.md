@@ -1,26 +1,23 @@
 # Utility Tools Collection
 
-A collection of utility tools for LightRAG diagnostics and React UI components.
+A collection of utility tools including a LightRAG diagnostic tool and React hooks for markdown rendering and chart integration.
 
-## Components
+## What's Included
 
-### LightRAG Diagnostic Tool (`new.py`)
-Python tool to verify LightRAG initialization status and prevent common setup errors.
-
-### ECharts React Hook (`file1.ts`)
-React hook for integrating ECharts with theme support and automatic cleanup.
-
-### Markdown Renderer Hook (`file2.ts`)
-React hook for rendering Markdown with LaTeX (KaTeX), Mermaid diagrams, syntax highlighting, and ECharts plugin support.
+- **LightRAG Diagnostic Tool** - Python utility to verify LightRAG initialization status
+- **Markdown Renderer Hook** - React hook for rendering markdown with LaTeX, Mermaid diagrams, and syntax highlighting
+- **ECharts Hook** - React hook for integrating ECharts with theme support
 
 ## Installation
 
 ### Python Tool
+
 ```bash
 python new.py --demo
 ```
 
 ### React Hooks
+
 ```typescript
 import useECharts from './file1';
 import useMarkdown from './file2';
@@ -29,6 +26,7 @@ import useMarkdown from './file2';
 ## Usage
 
 ### LightRAG Diagnostic
+
 ```python
 from new import check_lightrag_setup
 
@@ -36,16 +34,27 @@ from new import check_lightrag_setup
 await check_lightrag_setup(rag_instance, verbose=True)
 ```
 
-### ECharts Hook
-```typescript
-const { initECharts, disposeECharts } = useECharts({ message });
-```
+### Markdown Renderer
 
-### Markdown Hook
 ```typescript
 const { render } = useMarkdown();
 const html = render(markdownString);
 ```
+
+### ECharts Integration
+
+```typescript
+const { initECharts, disposeECharts } = useECharts({ message });
+```
+
+## Contributing
+
+Contributions are welcome. To set up for development:
+
+1. Clone the repository
+2. For Python: Ensure Python 3.7+ is installed
+3. For TypeScript: Install dependencies with your package manager
+4. Make your changes and test thoroughly
 
 ## License
 
