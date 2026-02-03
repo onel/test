@@ -1,36 +1,22 @@
 # Utility Tools Collection
 
-A collection of React hooks and Python diagnostic tools for enhanced markdown rendering, chart integration, and LightRAG development.
-
-## What's Included
-
-This repository contains:
-
-- **React Markdown Hook** - Render markdown with LaTeX math, Mermaid diagrams, syntax highlighting, and emoji support
-- **React ECharts Hook** - Integrate ECharts visualizations with automatic theming and lifecycle management
-- **LightRAG Diagnostic Tool** - Python utility to verify LightRAG initialization and troubleshoot setup issues
+React hooks and Python tools for markdown rendering, charts, and LightRAG diagnostics.
 
 ## Installation
 
 ### React Hooks
 
-Copy the TypeScript files into your React project:
-
-```bash
-# Copy hooks to your project
-cp file1.ts your-project/hooks/useECharts.ts
-cp file2.ts your-project/hooks/useMarkdown.ts
-```
-
-Install required dependencies:
+Install dependencies:
 
 ```bash
 npm install echarts katex markdown-it markdown-it-texmath markdown-it-mermaid markdown-it-emoji dompurify highlight.js
 ```
 
+Copy `file1.ts` and `file2.ts` into your project.
+
 ### Python Tool
 
-No installation required. Run directly:
+Run directly with Python 3.7+:
 
 ```bash
 python new.py --demo
@@ -38,79 +24,38 @@ python new.py --demo
 
 ## Usage
 
-### Markdown Rendering
-
-Render markdown with LaTeX, Mermaid diagrams, and syntax highlighting:
+### Markdown with LaTeX and Mermaid
 
 ```typescript
-import useMarkdown from './useMarkdown';
+import useMarkdown from './file2';
 
-function MyComponent() {
-  const { render } = useMarkdown();
-  
-  const markdown = `
-# Hello World
-
-Math: $E = mc^2$
-
-\`\`\`mermaid
-graph TD
-  A --> B
-\`\`\`
-  `;
-  
-  return <div dangerouslySetInnerHTML={{ __html: render(markdown) }} />;
-}
+const { render } = useMarkdown();
+const html = render('# Title\n\nMath: $E = mc^2$');
 ```
 
 ### ECharts Integration
 
-Integrate ECharts with automatic theme support and cleanup:
-
 ```typescript
-import useECharts from './useECharts';
+import useECharts from './file1';
 
-function ChartComponent({ message }) {
-  const { initECharts, disposeECharts } = useECharts({ message });
-  
-  useEffect(() => {
-    initECharts('prefix', 'chart-id');
-    return () => disposeECharts();
-  }, []);
-  
-  return <div id="chart-id" className="echarts-container" />;
-}
+const { initECharts, disposeECharts } = useECharts({ message });
+initECharts('prefix', 'chart-id');
 ```
 
 ### LightRAG Diagnostic
 
-Check if your LightRAG instance is properly initialized:
-
 ```python
-from lightrag import LightRAG
 from new import check_lightrag_setup
 
-# Create your RAG instance
-rag = LightRAG(working_dir="./data", ...)
-
-# Check initialization status
 await check_lightrag_setup(rag, verbose=True)
-```
-
-Run the demo to see the diagnostic tool in action:
-
-```bash
-python new.py --demo
 ```
 
 ## Contributing
 
-Contributions are welcome. To set up for development:
-
 1. Clone the repository
-2. For TypeScript: Install dependencies with `npm install` or your preferred package manager
-3. For Python: Ensure Python 3.7+ is installed
-4. Make your changes and test thoroughly before submitting
+2. Install dependencies (TypeScript: `npm install`, Python: Python 3.7+)
+3. Make changes and test
+4. Submit a pull request
 
 ## License
 
